@@ -61,6 +61,7 @@ function App() {
   }, []);
 
   const updateUser = ({ user, data }: SocketData) => {
+    console.log(user.status, data);
     const index = users.findIndex(el => el.id === user.id);
     const _users = [...users];
     if (data) { _users[index].data = data; }
@@ -78,9 +79,10 @@ function App() {
     connectSocket();
     const connectionKey = String(+new Date());
     window.open(`http://localhost:5501?connectionKey=${connectionKey}`);
+    const _user = { ...user, status: USER_STATUS.PENDING };
+    updateUser({ user: _user });
     initListener(connectionKey);
-    initEmitter(connectionKey, user);
-    updateUser({ user: { ...user, status: USER_STATUS.PENDING }});
+    initEmitter(connectionKey, _user);
   }
 
   const initEmitter = (connectionKey: string, user: any) => {
